@@ -16,4 +16,5 @@ dist/
 # OS / IDE specific
 .DS_Store
 .vscode/
-.idea/
+.idea/hand_landmarks.csv 
+venv/ 

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { ChevronRight } from 'lucide-react';
 import HeroVisual from './HeroVisual';
+// import SplineModel from './SplineModel';
 
 const HeroSection = () => {
     return (
@@ -39,6 +40,7 @@ const HeroSection = () => {
                 className="relative h-80 lg:h-96"
             >
                 <HeroVisual />
+                {/* <SplineModel /> */}
             </motion.div>
         </section>
     );

@@ -4,6 +4,10 @@ import StatCard from '@/components/features/dashboard/StatCard';
 import ProgressChart from '@/components/features/dashboard/ProgressChart';
 import SuggestedActivities from '@/components/features/dashboard/SuggestedActivities';
 import { Activity, Check, Target } from 'lucide-react';
+import StoryWeaverWidget from '@/components/features/dashboard/StoryWeaverWidget';
+import ResourceLibraryWidget from '@/components/features/dashboard/ResourceLibraryWidget';
+
+
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -63,6 +67,12 @@ const DashboardPage = () => {
                 </motion.div>
                 <motion.div variants={itemVariants} className="md:col-span-2 lg:col-span-1">
                     <SuggestedActivities />
+                </motion.div>
+                <motion.div variants={itemVariants} className="md:col-span-1 lg:col-span-2">
+                    <StoryWeaverWidget />
+                </motion.div>
+                <motion.div variants={itemVariants} className="md:col-span-1 lg:col-span-1">
+                    <ResourceLibraryWidget />
                 </motion.div>
             </motion.div>
         </div>

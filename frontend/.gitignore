@@ -1,73 +1,24 @@
-# Dependency directories
-node_modules/
-ios/build/
-android/build/
-android/.gradle/
-
-# Log files
+# Logs
+logs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 
-# OS and Editor specific files
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
 .DS_Store
-.idea/
-.vscode/
-*.iml
 *.suo
-*.user
-*.bak
-*.orig
-*.pyc
-*.swp
-*~
-.project
-.settings
-.cproject
-.classpath
-
-# React Native specific
-.expo/
-web-build/
-dist/
-temp/
-coverage/
-out/
-build/
-*bundlejs
-*.js.map
-*.tsbuildinfo
-
-# Android specific
-android/app/build/
-android/app/.cxx/
-android/app/src/main/assets/
-android/gradle/
-android/local.properties
-android/key.properties
-
-# iOS specific
-ios/Pods/
-ios/*.xcworkspace
-ios/*.xcodeproj/xcuserdata/
-ios/*.xcodeproj/project.xcworkspace/
-ios/DerivedData/
-ios/build/
-ios/fastlane/report.xml
-ios/fastlane/test_output/
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# Screenshots (if not part of version control)
-*.png
-*.jpg
-*.jpeg
-
-# Other potentially ignored files
-*.zip
-*.rar
-*.tar.gz
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

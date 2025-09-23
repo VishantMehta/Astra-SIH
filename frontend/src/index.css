@@ -1,0 +1,44 @@
+/* Import Tailwind's core styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Define our color variables for the "Starlight" theme */
+:root {
+  /* Light Theme */
+  --color-background: #F5F7FA;
+  /* Cool, soft white */
+  --color-foreground: #FFFFFF;
+  /* Pure white */
+  --color-primary-text: #1A202C;
+  /* Charcoal */
+  --color-accent: #4A90E2;
+  /* Bright, hopeful blue */
+  --color-accent-light: #63B3ED;
+  /* Vibrant sky blue (for hover effects) */
+  --color-success: #34D399;
+  /* Soothing green */
+}
+
+.dark {
+  /* Dark Theme */
+  --color-background: #0A0F1F;
+  /* Deep midnight blue */
+  --color-foreground: #131A33;
+  /* Slightly lighter navy */
+  --color-primary-text: #E2E8F0;
+  /* Soft off-white */
+  --color-accent: #63B3ED;
+  /* Vibrant sky blue */
+  --color-accent-light: #4A90E2;
+  /* Bright, hopeful blue (for hover effects) */
+  --color-success: #34D399;
+  /* Soothing green */
+}
+
+/* Add a smooth transition for color changes */
+body {
+  background-color: var(--color-background);
+  color: var(--color-primary-text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

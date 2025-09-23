@@ -7,7 +7,6 @@ import Layout from './components/Layout';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
 
-// This is the root layout component that includes our theme toggle logic
 import App from './App';
 import ScreenerPage from './pages/ScreenerPage';
 import ResultsPage from './pages/ResultsPage.jsx';
@@ -16,29 +15,30 @@ import EmotionMirrorPage from './pages/EmotionMirrorPage';
 import ResourceHubPage from './pages/ResourceHubPage';
 import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
-
-
+import AboutUsPage from './pages/AboutUsPage';
+import SensoryGymPage from './pages/SensoryGymPage';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <App />, // App now acts as the root, providing theme logic
+    element: <App />,
     children: [
       {
         path: '/',
         element: <HomePage />,
       },
+      { path: 'about', element: <AboutUsPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupPage /> },
       {
         path: 'dashboard',
         element: <DashboardPage />,
       },
-      { // <-- Add this new route object
+      {
         path: 'screener',
         element: <ScreenerPage />,
       },
-      { // <-- Add this new route object
+      {
         path: 'results',
         element: <ResultsPage />,
       },
@@ -46,17 +46,20 @@ const router = createBrowserRouter([
         path: 'gym',
         children: [
           {
-            path: 'magic-canvas', // Path: /gym/magic-canvas
+            index: true,
+            element: <SensoryGymPage />,
+          },
+          {
+            path: 'magic-canvas',
             element: <MagicCanvasPage />,
           },
-          { // <-- Add this new route object
+          {
             path: 'emotion-mirror',
             element: <EmotionMirrorPage />,
           },
-          // Other gym games will go here later, e.g., 'emotion-mirror'
         ],
       },
-      { // <-- Add this new route object
+      {
         path: 'resources',
         element: <ResourceHubPage />,
       },

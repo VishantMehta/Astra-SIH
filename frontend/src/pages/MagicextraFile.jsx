@@ -2,14 +2,14 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import Webcam from 'react-webcam';
 import { HandLandmarker, FilesetResolver } from '@mediapipe/tasks-vision';
 import { motion } from 'framer-motion';
-import Button from '../components/Button';
-import Card from '../components/Card';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
 
 // Helper Icons (for tools, colors, etc.)
-const ClearIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width = "20" height = "20" viewBox = "0 0 24 24" fill = "none" stroke = "currentColor" strokeWidth = "2" strokeLinecap = "round" strokeLinejoin = "round" > <path d="M3 6h18" /> <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /> <line x1="10" y1 = "11" x2 = "10" y2 = "17" /> <line x1="14" y1 = "11" x2 = "14" y2 = "17" /> </svg>;
-const UndoIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width = "20" height = "20" viewBox = "0 0 24 24" fill = "none" stroke = "currentColor" strokeWidth = "2" strokeLinecap = "round" strokeLinejoin = "round" > <path d="M21 12H3" /> <path d="M8 7l-5 5l5 5" /> </svg>; / / Example, usually it's a curved arrow
+const ClearIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" > <path d="M3 6h18" /> <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /> <line x1="10" y1="11" x2="10" y2="17" /> <line x1="14" y1="11" x2="14" y2="17" /> </svg>;
+const UndoIcon = () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" > <path d="M21 12H3" /> <path d="M8 7l-5 5l5 5" /> </svg>; / / Example, usually it's a curved arrow
 const Spinner = () => (
-    <div className= "w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" > </div>
+    <div className="w-12 h-12 border-4 border-accent border-t-transparent rounded-full animate-spin" > </div>
 );
 
 const MagicCanvasPage = () => {
@@ -167,91 +167,91 @@ const MagicCanvasPage = () => {
     };
 
     return (
-        <div className= "flex flex-col items-center" >
-        <Card className="w-full max-w-4xl p-0 overflow-hidden" >
-            <h1 className="text-3xl font-bold font-heading text-center p-6 pb-0" > Magic Canvas </h1>
-                < p className = "text-center text-primary-text/70 mb-6 px-6" >
+        <div className="flex flex-col items-center" >
+            <Card className="w-full max-w-4xl p-0 overflow-hidden" >
+                <h1 className="text-3xl font-bold font-heading text-center p-6 pb-0" > Magic Canvas </h1>
+                < p className="text-center text-primary-text/70 mb-6 px-6" >
                     Use your finger in front of the camera to draw!
-                        </p>
+                </p>
 
-                        < div className = "relative w-full h-[400px] bg-gray-900 overflow-hidden rounded-b-xl" >
-                            {/* Webcam */ }
-                            < Webcam
-    ref = { webcamRef }
-    className = "absolute inset-0 w-full h-full object-cover transform scaleX(-1)" // Mirror
-    mirrored = { true}
-    audio = { false}
-    videoConstraints = {{
-        facingMode: "user",
-            width: { ideal: 640 },
-        height: { ideal: 480 }
-    }
-}
-onUserMedia = {() => { /* Not directly calling enableCam here, triggered by button */ }}
-onUserMediaError = {(error) => console.error("Webcam Error:", error)}
+                < div className="relative w-full h-[400px] bg-gray-900 overflow-hidden rounded-b-xl" >
+                    {/* Webcam */}
+                    < Webcam
+                        ref={webcamRef}
+                        className="absolute inset-0 w-full h-full object-cover transform scaleX(-1)" // Mirror
+                        mirrored={true}
+                        audio={false}
+                        videoConstraints={{
+                            facingMode: "user",
+                            width: { ideal: 640 },
+                            height: { ideal: 480 }
+                        }
+                        }
+                        onUserMedia={() => { /* Not directly calling enableCam here, triggered by button */ }}
+                        onUserMediaError={(error) => console.error("Webcam Error:", error)}
                     />
 
-{/* Detections Overlay Canvas */ }
-<canvas ref={ canvasRef } className = "absolute inset-0 w-full h-full transform scaleX(-1) z-10" />
+                    {/* Detections Overlay Canvas */}
+                    <canvas ref={canvasRef} className="absolute inset-0 w-full h-full transform scaleX(-1) z-10" />
 
-    {/* Drawing Canvas */ }
-    < canvas ref = { drawingCanvasRef } className = "absolute inset-0 w-full h-full z-20" />
+                    {/* Drawing Canvas */}
+                    < canvas ref={drawingCanvasRef} className="absolute inset-0 w-full h-full z-20" />
 
-        {!isCameraReady && (
-            <motion.div
-                            initial={ { opacity: 0 } }
-animate = {{ opacity: 1 }}
-className = "absolute inset-0 bg-background/90 z-30 flex flex-col items-center justify-center p-4 text-center"
-    >
-{
-    modelLoading?(
-                                <>
-    <Spinner />
-    < h2 className = "text-2xl font-heading mt-4" > Loading AI Model...</h2>
-        < p className = "text-primary-text/70" > This may take a moment.</p>
-            </>
-                            ) : (
-    <>
-    <h2 className= "text-2xl font-heading mb-4" > Ready to Start ? </h2>
-        < Button variant = "primary" size = "lg" onClick = { enableCam } >
-            Activate Magic
-                </Button>
-                </>
-                            )}
-</motion.div>
+                    {!isCameraReady && (
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            className="absolute inset-0 bg-background/90 z-30 flex flex-col items-center justify-center p-4 text-center"
+                        >
+                            {
+                                modelLoading ? (
+                                    <>
+                                        <Spinner />
+                                        < h2 className="text-2xl font-heading mt-4" > Loading AI Model...</h2>
+                                        < p className="text-primary-text/70" > This may take a moment.</p>
+                                    </>
+                                ) : (
+                                    <>
+                                        <h2 className="text-2xl font-heading mb-4" > Ready to Start ? </h2>
+                                        < Button variant="primary" size="lg" onClick={enableCam} >
+                                            Activate Magic
+                                        </Button>
+                                    </>
+                                )}
+                        </motion.div>
                     )}
-</div>
+                </div>
 
-{/* Controls */ }
-<div className="p-6 border-t border-foreground flex flex-wrap items-center justify-center gap-4" >
-    {/* Color Palette */ }
-    < div className = "flex gap-2" >
-    {
-        ['#4A90E2', '#34D399', '#FF8C66', '#FFFFFF', '#1A202C'].map(color => (
-            <button
-                                key= { color }
-                                onClick = {() => setDrawingColor(color)}
-className = {`w-8 h-8 rounded-full border-2 ${drawingColor === color ? 'border-accent' : 'border-transparent'} hover:scale-110 transition-transform`}
-style = {{ backgroundColor: color }}
-                            />
-                        ))}
-</div>
+                {/* Controls */}
+                <div className="p-6 border-t border-foreground flex flex-wrap items-center justify-center gap-4" >
+                    {/* Color Palette */}
+                    < div className="flex gap-2" >
+                        {
+                            ['#4A90E2', '#34D399', '#FF8C66', '#FFFFFF', '#1A202C'].map(color => (
+                                <button
+                                    key={color}
+                                    onClick={() => setDrawingColor(color)}
+                                    className={`w-8 h-8 rounded-full border-2 ${drawingColor === color ? 'border-accent' : 'border-transparent'} hover:scale-110 transition-transform`}
+                                    style={{ backgroundColor: color }}
+                                />
+                            ))}
+                    </div>
 
-{/* Brush Size */ }
-<input
+                    {/* Brush Size */}
+                    <input
                         type="range"
-min = "2"
-max = "20"
-value = { brushSize }
-onChange = {(e) => setBrushSize(parseInt(e.target.value))}
-className = "w-32 accent-accent"
-    />
+                        min="2"
+                        max="20"
+                        value={brushSize}
+                        onChange={(e) => setBrushSize(parseInt(e.target.value))}
+                        className="w-32 accent-accent"
+                    />
 
-    {/* Action Buttons */ }
-    < Button variant = "secondary" size = "sm" onClick = { clearCanvas } > <ClearIcon /> Clear</Button >
-        {/* <Button variant="secondary" size="sm" onClick={undoDrawing} disabled={historyStep === 0}><UndoIcon /> Undo</Button> */ }
-        </div>
-        </Card>
+                    {/* Action Buttons */}
+                    < Button variant="secondary" size="sm" onClick={clearCanvas} > <ClearIcon /> Clear</Button >
+                    {/* <Button variant="secondary" size="sm" onClick={undoDrawing} disabled={historyStep === 0}><UndoIcon /> Undo</Button> */}
+                </div>
+            </Card>
         </div>
     );
 };

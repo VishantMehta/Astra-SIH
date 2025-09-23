@@ -1,44 +1,64 @@
-/* Import Tailwind's core styles */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@400,500,700&f[]=general-sans@500,600,700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Define our color variables for the "Starlight" theme */
-:root {
-  /* Light Theme */
-  --color-background: #F5F7FA;
-  /* Cool, soft white */
-  --color-foreground: #FFFFFF;
-  /* Pure white */
-  --color-primary-text: #1A202C;
-  /* Charcoal */
-  --color-accent: #4A90E2;
-  /* Bright, hopeful blue */
-  --color-accent-light: #63B3ED;
-  /* Vibrant sky blue (for hover effects) */
-  --color-success: #34D399;
-  /* Soothing green */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 224 71.4% 4.1%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 215 85% 55%;
+    /* Bright, hopeful blue */
+    --primary-foreground: 210 20% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 220 14.3% 95.9%;
+    --muted-foreground: 225.2 38.4% 19.8%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 220 13% 91%;
+    --input: 220 13% 91%;
+    --ring: 215 85% 55%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    --background: 224 71.4% 4.1%;
+    --foreground: 210 20% 98%;
+    --card: 224 71.4% 4.1%;
+    --card-foreground: 210 20% 98%;
+    --popover: 224 71.4% 4.1%;
+    --popover-foreground: 210 20% 98%;
+    --primary: 215 85% 65%;
+    /* Slightly brighter blue for dark mode */
+    --primary-foreground: 210 20% 98%;
+    --secondary: 215 27.9% 16.9%;
+    --secondary-foreground: 210 20% 98%;
+    --muted: 215 27.9% 16.9%;
+    --muted-foreground: 217.9 10.6% 64.9%;
+    --accent: 215 27.9% 16.9%;
+    --accent-foreground: 210 20% 98%;
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 215 27.9% 16.9%;
+    --input: 215 27.9% 16.9%;
+    --ring: 215 85% 65%;
+  }
 }
 
-.dark {
-  /* Dark Theme */
-  --color-background: #0A0F1F;
-  /* Deep midnight blue */
-  --color-foreground: #131A33;
-  /* Slightly lighter navy */
-  --color-primary-text: #E2E8F0;
-  /* Soft off-white */
-  --color-accent: #63B3ED;
-  /* Vibrant sky blue */
-  --color-accent-light: #4A90E2;
-  /* Bright, hopeful blue (for hover effects) */
-  --color-success: #34D399;
-  /* Soothing green */
-}
+@layer base {
+  * {
+    @apply border-border;
+  }
 
-/* Add a smooth transition for color changes */
-body {
-  background-color: var(--color-background);
-  color: var(--color-primary-text);
-  transition: background-color 0.3s ease, color 0.3s ease;
+  body {
+    @apply bg-background text-foreground;
+  }
 }

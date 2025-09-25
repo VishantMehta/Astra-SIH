@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-    // THIS IS THE FIX: Changed '1227.0.0.1' back to the correct '127.0.0.1'
-    baseURL: 'http://127.0.0.1:8000/api/v1',
+    // baseURL: 'http://127.0.0.1:8000/api/v1',
+    baseURL: 'https://astra-backend-141e.onrender.com/api/v1',
     headers: {
         'Content-Type': 'application/json',
     },

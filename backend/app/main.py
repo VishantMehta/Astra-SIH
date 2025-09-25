@@ -50,18 +50,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(title="Astra Project API", lifespan=lifespan)
 
-origins = [
-    "http://localhost:5173",
-]
-
-# This adds the middleware to the FastAPI application.
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],  
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["*"],  
+    allow_headers=["*"],  
 )
+
 
 
 # Include all routers

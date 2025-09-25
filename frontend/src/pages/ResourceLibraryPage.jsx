@@ -1,33 +1,48 @@
-import { useState, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import FilterSidebar from '@/components/features/library/FilterSidebar';
 import ResourceCard from '@/components/features/library/ResourceCard';
-
-// Mock data for the library. This would come from your backend.
-const allResources = [
-    { id: 1, title: "Understanding Sensory Needs", type: "Article", description: "An in-depth look at sensory processing and practical tips for parents.", tags: ["Sensory Issues", "Toddler (1-3)"] },
-    { id: 2, title: "Video Guide to PECS", type: "Video", description: "Learn the basics of the Picture Exchange Communication System.", tags: ["Communication", "Preschool (3-5)"] },
-    { id: 3, title: "Creating Visual Schedules", type: "Guide", description: "A step-by-step guide to making visual schedules that reduce anxiety.", tags: ["Routine Management", "School-Age (6-12)"] },
-    { id: 4, title: "Navigating Social Cues", type: "Article", description: "Strategies for helping your child understand common social interactions.", tags: ["Social Skills", "School-Age (6-12)"] },
-    { id: 5, title: "Managing Meltdowns", type: "Video", description: "Expert advice on how to de-escalate and prevent sensory-related meltdowns.", tags: ["Sensory Issues", "Preschool (3-5)"] },
-    { id: 6, title: "A Parent's Guide to IEPs", type: "Guide", description: "Everything you need to know about Individualized Education Programs.", tags: ["Routine Management", "School-Age (6-12)"] },
-];
+import { Button } from '@/components/ui/Button';
+import apiClient from '@/lib/api';
 
 const ResourceLibraryPage = () => {
+    const [resources, setResources] = useState([]);
+    const [pagination, setPagination] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
-        searchTerm: '',
-        challenges: [],
+        search: '',
+        challenge: '',
         age: '',
+        page: 1,
     });
 
-    const filteredResources = useMemo(() => {
-        return allResources.filter(resource => {
-            const searchMatch = resource.title.toLowerCase().includes(filters.searchTerm.toLowerCase()) || resource.description.toLowerCase().includes(filters.searchTerm.toLowerCase());
-            const challengeMatch = filters.challenges.length === 0 || filters.challenges.every(c => resource.tags.includes(c));
-            const ageMatch = filters.age === '' || resource.tags.includes(filters.age);
-            return searchMatch && challengeMatch && ageMatch;
-        });
-    }, [filters]);
+    useEffect(() => {
+        const fetchLibraryItems = async () => {
+            setLoading(true);
+            try {
+                const params = new URLSearchParams({
+                    page: filters.page,
+                    limit: 6, // Show 6 items per page
+                });
+                if (filters.search) params.append('search', filters.search);
+                if (filters.challenge) params.append('challenge', filters.challenge);
+                if (filters.age) params.append('age', filters.age);
+
+                const response = await apiClient.get(`/resources/library?${params.toString()}`);
+                setResources(response.data.data);
+                setPagination(response.data.pagination);
+            } catch (error) {
+                console.error("Failed to fetch library items:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchLibraryItems();
+    }, [filters]); // Re-fetch whenever any filter changes
+
+    const handlePageChange = (newPage) => {
+        setFilters(prev => ({ ...prev, page: newPage }));
+    };
 
     return (
         <div className="container py-12">
@@ -43,14 +58,36 @@ const ResourceLibraryPage = () => {
                     <FilterSidebar filters={filters} setFilters={setFilters} />
                 </div>
                 <main className="lg:col-span-3">
-                    {filteredResources.length > 0 ? (
-                        <div className="grid md:grid-cols-2 gap-6">
-                            {filteredResources.map(resource => (
-                                <motion.div key={resource.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-                                    <ResourceCard resource={resource} />
-                                </motion.div>
-                            ))}
-                        </div>
+                    {loading ? (
+                        <div className="text-center py-16">Loading resources...</div>
+                    ) : resources.length > 0 ? (
+                        <>
+                            <div className="grid md:grid-cols-2 gap-6">
+                                {resources.map(resource => (
+                                    <motion.div key={resource.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                                        <ResourceCard resource={resource} />
+                                    </motion.div>
+                                ))}
+                            </div>
+                            {/* Pagination Controls */}
+                            <div className="mt-8 flex justify-center items-center gap-4">
+                                <Button
+                                    onClick={() => handlePageChange(pagination.currentPage - 1)}
+                                    disabled={pagination.currentPage === 1}
+                                >
+                                    Previous
+                                </Button>
+                                <span className="text-sm font-medium">
+                                    Page {pagination.currentPage} of {pagination.totalPages}
+                                </span>
+                                <Button
+                                    onClick={() => handlePageChange(pagination.currentPage + 1)}
+                                    disabled={pagination.currentPage === pagination.totalPages}
+                                >
+                                    Next
+                                </Button>
+                            </div>
+                        </>
                     ) : (
                         <div className="text-center py-16">
                             <p className="text-xl font-semibold">No resources found</p>

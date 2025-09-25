@@ -20,6 +20,8 @@ import SensoryGymPage from './pages/SensoryGymPage';
 import ResourceLibraryPage from './pages/ResourceLibraryPage';
 import ForumPage from './pages/ForumPage';
 import PostDetailPage from './pages/PostDetailPage';
+import ProtectedRoute from './components/common/ProtectedRoute';
+
 
 const router = createBrowserRouter([
   {
@@ -33,9 +35,16 @@ const router = createBrowserRouter([
       { path: 'about', element: <AboutUsPage /> },
       { path: 'login', element: <LoginPage /> },
       { path: 'signup', element: <SignupPage /> },
+
       {
-        path: 'dashboard',
-        element: <DashboardPage />,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: 'dashboard',
+            element: <DashboardPage />,
+          },
+
+        ]
       },
       {
         path: 'screener',
@@ -77,6 +86,7 @@ const router = createBrowserRouter([
       },
       { path: 'forum', element: <ForumPage /> },
       { path: 'forum/:postId', element: <PostDetailPage /> },
+
     ],
   },
 ]);

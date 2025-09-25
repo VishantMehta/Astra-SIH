@@ -1,15 +1,61 @@
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/Card";
 import { Avatar, AvatarFallback } from "@/components/ui/Avatar";
 import { Textarea } from "@/components/ui/Textarea";
 import { Button } from "@/components/ui/Button";
-import { ArrowLeft } from "lucide-react";
-
-// Mock data for a single post and comments
-const mockPost = { id: 1, title: "Any advice for a child who is a picky eater?", author: "Anonymous Parent", timestamp: "2 hours ago", content: "My 4-year-old has a very limited diet and I'm worried about their nutrition. We've tried everything we can think of... textures seem to be a big issue. Looking for any strategies that have worked for others.", comments: [{ author: "Anonymous Parent", timestamp: "1 hour ago", text: "We had the same issue! We started using a 'food exploration' mat where there's no pressure to eat, just to touch or smell. It took a while but slowly helped." }, { author: "Anonymous Parent", timestamp: "45 minutes ago", text: "Have you tried involving them in the cooking process? My son is more likely to try something if he helped make it." }] };
+import { ArrowLeft, Loader2 } from "lucide-react";
+import apiClient from "@/lib/api";
 
 const PostDetailPage = () => {
-    const { postId } = useParams(); // In a real app, you'd use this ID to fetch data
+    const { postId } = useParams();
+    const [post, setPost] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [newComment, setNewComment] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    useEffect(() => {
+        const fetchPostDetails = async () => {
+            setLoading(true);
+            try {
+                const response = await apiClient.get(`/forum/posts/${postId}`);
+                setPost(response.data);
+            } catch (error) {
+                console.error("Failed to fetch post details:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPostDetails();
+    }, [postId]);
+
+    const handleAddComment = async (e) => {
+        e.preventDefault();
+        if (!newComment.trim()) return;
+        setIsSubmitting(true);
+        try {
+            const response = await apiClient.post(`/forum/posts/${postId}/comments`, { text: newComment });
+            const createdComment = response.data;
+            // Add the new comment to the state instantly for a great UX
+            setPost(prevPost => ({
+                ...prevPost,
+                comments: [...prevPost.comments, createdComment]
+            }));
+            setNewComment(""); // Clear the textarea
+        } catch (error) {
+            console.error("Failed to add comment:", error);
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    if (loading) {
+        return <div className="container py-12 text-center">Loading post...</div>;
+    }
+
+    if (!post) {
+        return <div className="container py-12 text-center">Post not found.</div>;
+    }
 
     return (
         <div className="container py-12">
@@ -18,28 +64,28 @@ const PostDetailPage = () => {
                 Back to Forum
             </Link>
 
-            {/* Original Post */}
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-3xl">{mockPost.title}</CardTitle>
-                    <CardDescription>Posted by {mockPost.author} • {mockPost.timestamp}</CardDescription>
+                    <CardTitle className="text-3xl">{post.title}</CardTitle>
+                    <CardDescription>
+                        Posted by {post.author.username} • {new Date(post.created_at).toLocaleString()}
+                    </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <p className="whitespace-pre-wrap">{mockPost.content}</p>
+                    <p className="whitespace-pre-wrap">{post.content}</p>
                 </CardContent>
             </Card>
 
-            {/* Comments Section */}
             <div className="mt-8">
-                <h2 className="text-2xl font-bold font-heading mb-4">{mockPost.comments.length} Replies</h2>
+                <h2 className="text-2xl font-bold font-heading mb-4">{post.comments.length} Replies</h2>
                 <div className="space-y-6">
-                    {mockPost.comments.map((comment, index) => (
-                        <div key={index} className="flex items-start gap-4">
+                    {post.comments.map((comment) => (
+                        <div key={comment.id} className="flex items-start gap-4">
                             <Avatar>
-                                <AvatarFallback>{comment.author.charAt(0)}</AvatarFallback>
+                                <AvatarFallback>{comment.author.username.charAt(0)}</AvatarFallback>
                             </Avatar>
                             <div className="flex-grow">
-                                <p className="font-semibold">{comment.author} <span className="text-xs text-muted-foreground ml-2">{comment.timestamp}</span></p>
+                                <p className="font-semibold">{comment.author.username} <span className="text-xs text-muted-foreground ml-2">{new Date(comment.created_at).toLocaleString()}</span></p>
                                 <p className="mt-1">{comment.text}</p>
                             </div>
                         </div>
@@ -47,15 +93,23 @@ const PostDetailPage = () => {
                 </div>
             </div>
 
-            {/* Add Comment Form */}
             <Card className="mt-8">
                 <CardHeader>
                     <CardTitle>Add Your Reply</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <form className="grid gap-4">
-                        <Textarea placeholder="Share your thoughts..." className="min-h-[100px]" />
-                        <Button>Submit Reply</Button>
+                    <form onSubmit={handleAddComment} className="grid gap-4">
+                        <Textarea
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            placeholder="Share your thoughts..."
+                            className="min-h-[100px]"
+                            required
+                        />
+                        <Button type="submit" disabled={isSubmitting}>
+                            {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            Submit Reply
+                        </Button>
                     </form>
                 </CardContent>
             </Card>

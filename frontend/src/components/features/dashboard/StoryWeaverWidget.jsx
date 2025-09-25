@@ -4,34 +4,32 @@ import { Dialog, DialogContent } from "@/components/ui/Dialog";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import StoryDisplay from "./StoryDisplay";
+import apiClient from '@/lib/api';
 import { BookHeart, Loader2 } from "lucide-react";
 
 const StoryWeaverWidget = () => {
     const [story, setStory] = useState(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [situation, setSituation] = useState("");
+    const [error, setError] = useState(null);
 
-    // This function simulates the API call to the GenAI model
-    const handleGenerate = (e) => {
+    const handleGenerate = async (e) => {
         e.preventDefault();
         if (!situation) return;
 
         setIsGenerating(true);
-        // Simulate a 2-second API call
-        setTimeout(() => {
-            // In a real app, the response from your backend would be used here
-            const generatedStory = {
-                situation: situation,
-                steps: [
-                    { text: "First, we will get ready to go. It is a new place.", illustration: "Child putting on shoes with a parent" },
-                    { text: "Then, we will travel to the new place. It is an adventure.", illustration: "Car driving down a friendly-looking street" },
-                    { text: "When we arrive, we can look around together.", illustration: "Parent and child looking at the new place from outside" },
-                    { text: "It is okay to feel nervous, but we will do it together.", illustration: "Parent holding child's hand and smiling" },
-                ]
-            };
-            setStory(generatedStory);
+        setError(null);
+
+        try {
+            // This now calls the live backend endpoint
+            const response = await apiClient.post('/dashboard/story-weaver', { situation });
+            setStory(response.data);
+        } catch (err) {
+            setError('Failed to generate story. Please try again.');
+            console.error(err);
+        } finally {
             setIsGenerating(false);
-        }, 2000);
+        }
     };
 
     return (
@@ -40,7 +38,7 @@ const StoryWeaverWidget = () => {
                 <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                         <BookHeart className="h-5 w-5 text-primary" />
-                        Story Weaver (GenAI)
+                        Story Weaver (Live AI)
                     </CardTitle>
                     <CardDescription>
                         Create simple social stories to prepare for new situations.
@@ -54,6 +52,7 @@ const StoryWeaverWidget = () => {
                             onChange={(e) => setSituation(e.target.value)}
                             placeholder="E.g., Going to a birthday party, getting a haircut..."
                         />
+                        {error && <p className="text-sm text-red-500 mt-2">{error}</p>}
                     </CardContent>
                     <CardFooter>
                         <Button type="submit" disabled={isGenerating}>

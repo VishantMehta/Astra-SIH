@@ -24,8 +24,28 @@ const itemVariants = {
 };
 
 const ProfessionalsView = ({ type }) => {
-    const filteredList = professionals.filter(p => p.type === type);
+    const [professionals, setProfessionals] = useState([]);
+    const [loading, setLoading] = useState(true);
     const Icon = type === 'Therapist' ? User : Stethoscope;
+
+    useEffect(() => {
+        const fetchProfessionals = async () => {
+            setLoading(true);
+            try {
+                const response = await apiClient.get(`/resources/providers?type=${type}`);
+                setProfessionals(response.data);
+            } catch (error) {
+                console.error(`Failed to fetch ${type}s:`, error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchProfessionals();
+    }, [type]);
+
+    if (loading) {
+        return <div className="text-center py-10">Loading professionals...</div>;
+    }
 
     return (
         <motion.div
@@ -34,7 +54,7 @@ const ProfessionalsView = ({ type }) => {
             animate="visible"
             className="space-y-6"
         >
-            {filteredList.map(prof => (
+            {professionals.map(prof => (
                 <motion.div key={prof.id} variants={itemVariants}>
                     <Card className="flex flex-col sm:flex-row">
                         <div className="p-6 flex flex-col items-center justify-center border-b sm:border-r sm:border-b-0">
@@ -43,7 +63,7 @@ const ProfessionalsView = ({ type }) => {
                             <p className="text-sm text-muted-foreground">{prof.location}</p>
                         </div>
                         <div className="p-6 flex-grow">
-                            <CardDescription>{prof.description}</CardDescription>
+                            <p className="text-muted-foreground">{prof.description}</p>
                             <div className="mt-4 flex flex-wrap gap-2">
                                 {prof.specialties.map(spec => <Badge key={spec} variant="secondary">{spec}</Badge>)}
                             </div>

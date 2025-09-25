@@ -5,5 +5,9 @@ class Settings(BaseSettings):
 
     #The format for the database URL is: #postgresql://<user>:<password>@<host>:<port>/<dbname>
     DATABASE_URL: str
+    SECRET_KEY: str
+    ALGORITHM: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    GEMINI_API_KEY: str
 
 settings = Settings()

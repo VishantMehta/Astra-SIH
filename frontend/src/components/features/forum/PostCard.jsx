@@ -6,22 +6,22 @@ import { MessageSquare } from "lucide-react";
 
 const PostCard = ({ post }) => {
     return (
-        // The <Link> component now wraps the entire Card
+        // FIX #1: The <Link> component is now wrapping the entire card.
         <Link to={`/forum/${post.id}`} className="block">
-            <Card className="hover:border-primary transition-colors">
+            <Card className="hover:border-primary transition-colors h-full">
                 <CardHeader>
                     <div className="flex items-start justify-between">
                         <div className="flex items-center gap-4">
                             <Avatar>
-                                <AvatarFallback>{post.author.charAt(0)}</AvatarFallback>
+                                <AvatarFallback>{post.author.username.charAt(0).toUpperCase()}</AvatarFallback>
                             </Avatar>
                             <div>
-                                {/* The Link around the title is removed, as the whole card is now a link */}
-                                <CardTitle className="text-xl hover:underline">
+                                {/* FIX #2: The Link around the title is removed. */}
+                                <CardTitle className="text-xl group-hover:underline">
                                     {post.title}
                                 </CardTitle>
                                 <p className="text-sm text-muted-foreground">
-                                    Posted by {post.author} • {post.timestamp}
+                                    Posted by {post.author.username} • {new Date(post.created_at).toLocaleDateString()}
                                 </p>
                             </div>
                         </div>

@@ -17,6 +17,9 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import AboutUsPage from './pages/AboutUsPage';
 import SensoryGymPage from './pages/SensoryGymPage';
+import ResourceLibraryPage from './pages/ResourceLibraryPage';
+import ForumPage from './pages/ForumPage';
+import PostDetailPage from './pages/PostDetailPage';
 
 const router = createBrowserRouter([
   {
@@ -61,8 +64,19 @@ const router = createBrowserRouter([
       },
       {
         path: 'resources',
-        element: <ResourceHubPage />,
+        children: [
+          {
+            index: true,
+            element: <ResourceHubPage />,
+          },
+          {
+            path: 'library',
+            element: <ResourceLibraryPage />,
+          },
+        ]
       },
+      { path: 'forum', element: <ForumPage /> },
+      { path: 'forum/:postId', element: <PostDetailPage /> },
     ],
   },
 ]);

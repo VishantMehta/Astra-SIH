@@ -1,7 +1,9 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
 import ProfessionalsView from "@/components/features/resources/ProfessionalsView";
 import NgoMapView from "@/components/features/resources/NgoMapView";
-import { Building, User, Stethoscope } from 'lucide-react';
+import { Building, User, Stethoscope, ArrowRight } from 'lucide-react';
+import { Button } from "@/components/ui/Button";
+import { Link } from "react-router-dom";
 
 const ResourceHubPage = () => {
     return (
@@ -11,6 +13,11 @@ const ResourceHubPage = () => {
                 <p className="mt-4 max-w-3xl mx-auto text-lg text-muted-foreground">
                     Connect with a verified community of specialists, NGOs, and doctors dedicated to supporting neurodiverse journeys.
                 </p>
+                <Button asChild className="mt-6">
+                    <Link to="/resources/library">
+                        Explore the Full Resource Library <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                </Button>
             </div>
 
             <Tabs defaultValue="ngos" className="mt-10">

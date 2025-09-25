@@ -20,6 +20,7 @@ const Footer = () => {
                                 <li><Link to="/screener" className="text-muted-foreground hover:text-primary">Screener</Link></li>
                                 <li><Link to="/gym" className="text-muted-foreground hover:text-primary">Sensory Gym</Link></li>
                                 <li><Link to="/resources" className="text-muted-foreground hover:text-primary">Resource Hub</Link></li>
+                                <li><Link to="/forum" className="text-muted-foreground hover:text-primary">Parent Forum</Link></li>
                             </ul>
                         </div>
                         <div>

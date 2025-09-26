@@ -65,7 +65,7 @@ const DashboardPage = () => {
                     <StatCard
                         title="Screener Result"
                         value={stats?.screenerResult?.level || 'N/A'}
-                        description={`Last assessed: ${stats ? new Date(stats.screenerResult.lastAssessed).toLocaleDateString() : '-'}`}
+                        description={`Last assessed: ${stats?.screenerResult ? new Date(stats.screenerResult.lastAssessed).toLocaleDateString() : '-'}`}
                         icon={<Target className="h-4 w-4 text-muted-foreground" />}
                     />
                 </motion.div>

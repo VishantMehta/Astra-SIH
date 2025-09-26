@@ -22,7 +22,9 @@ const ResourceCard = ({ resource }) => {
                 </CardHeader>
                 <CardContent>
                     <div className="flex flex-wrap gap-2">
-                        {resource.tags.map(tag => <Badge key={tag} variant="secondary">{tag}</Badge>)}
+                        {(resource.tags || []).map(tag => (
+                            <Badge key={tag} variant="secondary">{tag}</Badge>
+                        ))}
                     </div>
                 </CardContent>
             </Card>

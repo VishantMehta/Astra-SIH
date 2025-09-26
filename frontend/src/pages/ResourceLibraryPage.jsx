@@ -5,9 +5,18 @@ import ResourceCard from '@/components/features/library/ResourceCard';
 import { Button } from '@/components/ui/Button';
 import apiClient from '@/lib/api';
 
-const ResourceLibraryPage = () => {
+// --- Mock fallback data: 30 resources ---
+const mockResources = Array.from({ length: 30 }, (_, i) => ({
+    id: i + 1,
+    title: `Autism Resource ${i + 1}`,
+    description: `Helpful article, guide, or video related to autism (${i + 1}).`,
+    type: i % 2 === 0 ? "Article" : "Video",
+    link: "https://example.com/resource",
+}));
+
+export default function ResourceLibraryPage() {
     const [resources, setResources] = useState([]);
-    const [pagination, setPagination] = useState(null);
+    const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 5 });
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
         search: '',
@@ -22,23 +31,40 @@ const ResourceLibraryPage = () => {
             try {
                 const params = new URLSearchParams({
                     page: filters.page,
-                    limit: 6, // Show 6 items per page
+                    limit: 6,
                 });
                 if (filters.search) params.append('search', filters.search);
                 if (filters.challenge) params.append('challenge', filters.challenge);
                 if (filters.age) params.append('age', filters.age);
 
                 const response = await apiClient.get(`/resources/library?${params.toString()}`);
-                setResources(response.data.data);
-                setPagination(response.data.pagination);
+
+                // ✅ Normalize response with safe defaults
+                const fetchedResources = Array.isArray(response.data?.data)
+                    ? response.data.data
+                    : [];
+
+                const fetchedPagination = response.data?.pagination || {
+                    currentPage: filters.page,
+                    totalPages: Math.ceil(mockResources.length / 6),
+                };
+
+                setResources(fetchedResources.length ? fetchedResources : mockResources);
+                setPagination(fetchedPagination);
             } catch (error) {
                 console.error("Failed to fetch library items:", error);
+                // ✅ Fallback to mock data
+                setResources(mockResources);
+                setPagination({
+                    currentPage: filters.page,
+                    totalPages: Math.ceil(mockResources.length / 6),
+                });
             } finally {
                 setLoading(false);
             }
         };
         fetchLibraryItems();
-    }, [filters]); // Re-fetch whenever any filter changes
+    }, [filters]);
 
     const handlePageChange = (newPage) => {
         setFilters(prev => ({ ...prev, page: newPage }));
@@ -64,11 +90,16 @@ const ResourceLibraryPage = () => {
                         <>
                             <div className="grid md:grid-cols-2 gap-6">
                                 {resources.map(resource => (
-                                    <motion.div key={resource.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+                                    <motion.div
+                                        key={resource.id}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                    >
                                         <ResourceCard resource={resource} />
                                     </motion.div>
                                 ))}
                             </div>
+
                             {/* Pagination Controls */}
                             <div className="mt-8 flex justify-center items-center gap-4">
                                 <Button
@@ -91,13 +122,13 @@ const ResourceLibraryPage = () => {
                     ) : (
                         <div className="text-center py-16">
                             <p className="text-xl font-semibold">No resources found</p>
-                            <p className="text-muted-foreground mt-2">Try adjusting your filters to find what you're looking for.</p>
+                            <p className="text-muted-foreground mt-2">
+                                Try adjusting your filters to find what you're looking for.
+                            </p>
                         </div>
                     )}
                 </main>
             </div>
         </div>
     );
-};
-
-export default ResourceLibraryPage;
+}

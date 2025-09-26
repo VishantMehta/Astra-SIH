@@ -7,7 +7,9 @@ class Settings(BaseSettings):
     DATABASE_URL: str
     SECRET_KEY: str
     ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60*24*8
     GEMINI_API_KEY: str
+    ML_SERVICE_URL: str = "ws://localhost:8001/ws/track"
+    DDS_SERVICE_URL: str
 
 settings = Settings()

@@ -11,9 +11,19 @@ const ProgressChart = () => {
         const fetchProgressData = async () => {
             try {
                 const response = await apiClient.get('/dashboard/progress');
-                setChartData(response.data);
+
+                // ✅ FIX 1: Validate that the API response is an array.
+                // If it's not, default to an empty array to prevent crashes.
+                if (Array.isArray(response.data)) {
+                    setChartData(response.data);
+                } else {
+                    console.warn("Progress chart API did not return an array, defaulting to empty.");
+                    setChartData([]);
+                }
+
             } catch (error) {
                 console.error("Failed to fetch progress data:", error);
+                setChartData([]); // Also default to empty on error
             } finally {
                 setLoading(false);
             }
@@ -31,22 +41,29 @@ const ProgressChart = () => {
                 {loading ? (
                     <div className="h-[300px] flex items-center justify-center">Loading chart data...</div>
                 ) : (
-                    <ResponsiveContainer width="100%" height={300}>
-                        <BarChart data={chartData}>
-                            <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                            <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                            <Tooltip
-                                contentStyle={{
-                                    background: "hsl(var(--background))",
-                                    border: "1px solid hsl(var(--border))",
-                                    borderRadius: "var(--radius)",
-                                }}
-                            />
-                            <Legend iconType="circle" />
-                            <Bar dataKey="completed" name="Completed" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-                            <Bar dataKey="skipped" name="Skipped" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
-                        </BarChart>
-                    </ResponsiveContainer>
+                    // ✅ FIX 2: Add an "empty state" message for a better UX.
+                    chartData.length > 0 ? (
+                        <ResponsiveContainer width="100%" height={300}>
+                            <BarChart data={chartData}>
+                                <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                                <Tooltip
+                                    contentStyle={{
+                                        background: "hsl(var(--background))",
+                                        border: "1px solid hsl(var(--border))",
+                                        borderRadius: "var(--radius)",
+                                    }}
+                                />
+                                <Legend iconType="circle" />
+                                <Bar dataKey="completed" name="Completed" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
+                                <Bar dataKey="skipped" name="Skipped" fill="hsl(var(--muted-foreground))" radius={[4, 4, 0, 0]} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    ) : (
+                        <div className="h-[300px] flex items-center justify-center text-muted-foreground">
+                            No activity data to display yet.
+                        </div>
+                    )
                 )}
             </CardContent>
         </Card>

@@ -21,7 +21,7 @@ import ResourceLibraryPage from './pages/ResourceLibraryPage';
 import ForumPage from './pages/ForumPage';
 import PostDetailPage from './pages/PostDetailPage';
 import ProtectedRoute from './components/common/ProtectedRoute';
-
+import MagicDrumsPage from './pages/MagicDrumsPage';
 
 const router = createBrowserRouter([
   {
@@ -68,6 +68,10 @@ const router = createBrowserRouter([
           {
             path: 'emotion-mirror',
             element: <EmotionMirrorPage />,
+          },
+          {
+            path: 'magic-drums',
+            element: <MagicDrumsPage />,
           },
         ],
       },

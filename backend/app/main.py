@@ -2,9 +2,11 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from sqlmodel import Session, select
-from app.api import auth, users, dashboard, resources, forum
+from app.api import auth, users, dashboard, resources, forum , sensory_gym
 from app.core.database import create_db_and_tables, engine
 from app.models.resource import Provider, Ngo,LibraryItem
+# from app.api import auth, users, dashboard, resources, forum
+
 def seed_data():
     with Session(engine) as session:
         # Check if providers exist
@@ -66,3 +68,5 @@ app.include_router(users.router, prefix="/api/v1")
 app.include_router(dashboard.router, prefix="/api/v1")
 app.include_router(resources.router, prefix="/api/v1")
 app.include_router(forum.router, prefix="/api/v1")
+# app.include_router(gym.router, prefix="/api/v1") 
+app.include_router(sensory_gym.router, prefix="/api/v1", tags=["Sensory Gym"])

@@ -5,7 +5,7 @@ import { Hand, Smile, Music } from 'lucide-react';
 const activities = [
     { to: "/gym/magic-canvas", icon: <Hand className="h-8 w-8 text-primary" />, title: "Magic Canvas", description: "Develop fine motor skills and creativity by drawing in the air with your finger.", status: "ready" },
     { to: "/gym/emotion-mirror", icon: <Smile className="h-8 w-8 text-primary" />, title: "Emotion Mirror", description: "Practice recognizing and expressing emotions by mirroring facial expressions in real-time.", status: "ready" },
-    { to: "/gym/magic-music", icon: <Music className="h-8 w-8 text-primary" />, title: "Magic Music", description: "Create rhythms and sounds with gestures, enhancing auditory processing and coordination.", status: "soon" },
+    { to: "/gym/magic-drums", icon: <Music className="h-8 w-8 text-primary" />, title: "Magic Drums", description: "Create rhythms and sounds with gestures, enhancing auditory processing and coordination.", status: "ready" },
 ];
 
 const containerVariants = {
